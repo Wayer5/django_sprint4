@@ -6,7 +6,7 @@ from .constants import MAX_LENGTH_CHAR_FIELD, MAX_LENGTH_CHAR_FIELD_COMMENT
 User = get_user_model()
 
 
-class AbstractPostModel(models.Model):
+class AbstractModel(models.Model):
     is_published = models.BooleanField(
         default=True,
         verbose_name='Опубликовано',
@@ -19,7 +19,7 @@ class AbstractPostModel(models.Model):
         abstract = True
 
 
-class Post(AbstractPostModel):
+class Post(AbstractModel):
     title = models.CharField(
         max_length=MAX_LENGTH_CHAR_FIELD,
         verbose_name='Заголовок')
@@ -57,7 +57,7 @@ class Post(AbstractPostModel):
         return self.title
 
 
-class Category(AbstractPostModel):
+class Category(AbstractModel):
     title = models.CharField(
         max_length=MAX_LENGTH_CHAR_FIELD,
         verbose_name='Заголовок')
@@ -77,7 +77,7 @@ class Category(AbstractPostModel):
         return self.title
 
 
-class Location(AbstractPostModel):
+class Location(AbstractModel):
     name = models.CharField(
         max_length=MAX_LENGTH_CHAR_FIELD,
         verbose_name='Название места')

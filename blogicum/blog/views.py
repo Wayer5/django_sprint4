@@ -17,6 +17,12 @@ from .utils import (get_object_from_query, get_query_all_posts,
 User = get_user_model()
 
 
+class SuccessURLMixin:
+    def get_success_url(self):
+        username = self.request.user
+        return reverse('blog:profile', kwargs={'username': username})
+
+
 class UserListView(ListView):
     model = Post
     author = None
@@ -43,17 +49,13 @@ class UserListView(ListView):
         return context
 
 
-class UserUpdateViews(LoginRequiredMixin, UpdateView):
+class UserUpdateViews(SuccessURLMixin, LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserCreateForm
     template_name = 'blog/user.html'
 
     def get_object(self):
         return self.request.user
-
-    def get_success_url(self):
-        username = self.request.user
-        return reverse('blog:profile', kwargs={'username': username})
 
 
 class PostListView(ListView):
@@ -82,7 +84,7 @@ class PostDetailView(DetailView):
             if not (post.is_published
                     and post.category.is_published
                     and post.pub_date <= timezone.now()):
-                raise Http404("Page not published")
+                raise Http404('Page not published')
         context['comments'] = post.comments.select_related(
             'author')
         context['form'] = CommentForm()
@@ -116,7 +118,7 @@ class CategoryListView(ListView):
         return get_query_published_posts(self.category.posts)
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class PostCreateView(SuccessURLMixin, LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostCreateForm
     template_name = 'blog/create.html'
@@ -124,10 +126,6 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
-
-    def get_success_url(self):
-        username = self.request.user
-        return reverse('blog:profile', kwargs={'username': username})
 
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
@@ -185,11 +183,11 @@ class CommentMixin(LoginRequiredMixin):
 
 
 class CommentUpdateView(CommentMixin, UpdateView):
-    """Редактирование комментария"""
+    """Редактирование комментария."""
 
 
 class CommentDeleteView(CommentMixin, DeleteView):
-    """Удаление комментария"""
+    """Удаление комментария."""
 
 
 @login_required
