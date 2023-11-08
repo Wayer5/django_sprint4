@@ -17,14 +17,11 @@ from .utils import (get_object_from_query, get_query_all_posts,
 User = get_user_model()
 
 
-# class SuccessURLMixin:
-#    def get_success_url(self):
-#        username = self.request.user
-#        return reverse('blog:profile', kwargs={'username': username})
-
 class SuccessURLMixin:
     def get_success_url(self):
-        return reverse('blog:profile', kwargs={'username': self.request.user.username})
+        return reverse(
+            'blog:profile', kwargs={'username': self.request.user.username}
+        )
 
 
 class UserListView(ListView):
@@ -59,7 +56,7 @@ class UserUpdateViews(SuccessURLMixin, LoginRequiredMixin, UpdateView):
     template_name = 'blog/user.html'
 
     def get_object(self):
-        return self.request.user 
+        return self.request.user
 
 
 class PostListView(ListView):
