@@ -67,7 +67,7 @@ class PostListView(ListView):
     queryset = get_query_published_posts(model.objects)
 
     def get_queryset(self):
-        return self.queryset # если убрать функцию, то не проходит тесты
+        return self.queryset  # если убрать функцию, то не проходит тесты
 
 
 class PostDetailView(DetailView):
