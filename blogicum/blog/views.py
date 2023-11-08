@@ -17,10 +17,14 @@ from .utils import (get_object_from_query, get_query_all_posts,
 User = get_user_model()
 
 
+# class SuccessURLMixin:
+#    def get_success_url(self):
+#        username = self.request.user
+#        return reverse('blog:profile', kwargs={'username': username})
+
 class SuccessURLMixin:
     def get_success_url(self):
-        username = self.request.user
-        return reverse('blog:profile', kwargs={'username': username})
+        return reverse('blog:profile', kwargs={'username': self.request.user.username})
 
 
 class UserListView(ListView):
@@ -55,7 +59,7 @@ class UserUpdateViews(SuccessURLMixin, LoginRequiredMixin, UpdateView):
     template_name = 'blog/user.html'
 
     def get_object(self):
-        return self.request.user
+        return self.request.user 
 
 
 class PostListView(ListView):
@@ -66,7 +70,7 @@ class PostListView(ListView):
     queryset = get_query_published_posts(model.objects)
 
     def get_queryset(self):
-        return self.queryset
+        return self.queryset # если убрать функцию, то не проходит тесты
 
 
 class PostDetailView(DetailView):
